@@ -1,0 +1,87 @@
+.full-wrap {
+    background-color: #fffaf0;
+    width: 100vw;
+    height: 100vw;
+    z-index: 0;
+    overflow: hidden;
+    position: fixed;
+}
+
+.top-bar {
+    background-color: #008fb3;
+    height: 5%;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    position: absolute;
+    z-index: 1;
+    margin-top: 0;
+}
+
+.side-bar {
+    background-color: #00b8e6;
+
+    height: 88%;
+    max-height: 53%;
+    width: 15%;
+    max-width: 15%;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+
+    z-index: 1;
+    margin-left: 0;
+    margin-top: 12%;
+    margin-bottom: 35%;
+    position: fixed;
+}
+
+.schedule-container {
+   margin-top: 0;
+    height: 35px;
+    max-height: 20%;
+}
+
+.schedule-title {
+    text-align: center;
+    background-color: #00b8e6;
+    height: 100%;
+    font-size: 30px;
+    color: black;
+}
+
+.schedule-title-hover {
+    text-align: center;
+    background: #1ad1ff;
+    height: 100%;
+    font-size: 30px;
+    color: black;
+
+}
+
+.schedule-title-hover-click {
+    text-align: center;
+    background: #1ad1ff;
+    font-size: 30px;
+    color: black;
+
+}
+
+.schedule-title-click {
+    text-align: center;
+    background: #1ad1ff;
+    color: black;
+    font-size: 30px;
+}
+
+.display-space {
+    height: 88%;
+    max-height: 88%;
+    width: 85%;
+    max-width: 85%;
+    overflow: hidden;
+    z-index: 1;
+    margin-right: 0;
+    padding-top: 0;
+}
