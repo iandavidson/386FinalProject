@@ -5,14 +5,16 @@ require('dotenv').config();
 class LoginController {
     async authorizeUser(ctx) {//ctx gets passed in here from routes.js
         return new Promise((resolve, reject) => {
+
+            //shouldnet this be a string.
             const match = ctx.params.user_id.match(/[^0-9]+/);  // We expect an all digit user-id.
             if (match) {
                 console.log('about to return because user input contains non-digit characters..');
                 return reject("Incorrect login credentials."); // send out this message as the response to this call.
             }
-            let query = "SELECT * FROM users WHERE admin_id = ?"; // look at the ? mark
-	    console.log('About to run this query.', query);
-	    console.log('ctx.params.user_id is', ctx.params.user_id);
+            let query = "select * from advisingUsers where login_id = ?"; // look at the ? mark
+      	    console.log('About to run this query.', query);
+      	    console.log('ctx.params.user_id is', ctx.params.user_id);
             dbConnection.query( //check the top line.
                 {
                     sql: query,

@@ -26,6 +26,15 @@ const loginRouter = require('koa-router')({
 });
 loginRouter.get('/:user_id', LoginController.authorizeUser, (err) => console.log("routers.js: loginRouter error:", err));
 
+//Advising Controller
+const AdvisingController = new (require('../app/Controllers/AdvisingController.js'))();
+const advisingRouter = require('koa-router')({
+  prefix: '/advising'
+});
+advisingRouter.get('/')
+
+
+
 // TheatersController
 const TheaterController = new (require('../app/Controllers/TheaterController.js'))();
 const theaterRouter = require('koa-router')({
@@ -37,6 +46,7 @@ theaterRouter.get('/all-theaters', Authorize('admin'), TheaterController.allThea
 
 router.use(
     '',
+    advisingRouter.routes(),
     theaterRouter.routes(),
     loginRouter.routes()
 );
