@@ -26,28 +26,40 @@ const loginRouter = require('koa-router')({
 });
 loginRouter.get('/:user_id', LoginController.authorizeUser, (err) => console.log("routers.js: loginRouter error:", err));
 
-//Advising Controller
-const AdvisingController = new (require('../app/Controllers/AdvisingController.js'))();
-const advisingRouter = require('koa-router')({
-  prefix: '/advising'
+//AdviseeController Controller
+const AdviseeController = new (require('../app/Controllers/AdviseeController.js'))();
+const adviseeRouter = require('koa-router')({
+  prefix: '/advisee'
 });
-advisingRouter.get('/')
+adviseeRouter.get('/:student_id', Authorize("student"), AdviseeController.getAdvisor, (err) => console.log("router.js: advisee controller: ", err));
+
+
+
+
+//AdviserController Controller
+const AdviserController = new (require('../app/Controllers/AdviserController.js'))();
+const adviserRouter = require('koa-router')({
+  prefix: '/adviser'
+});
+adviseeRouter.get('/:advisor_id', Authorize("student"), AdviserController.getAdvisees, (err) => console.log("router.js: adviser controller: ", err));
+
 
 
 
 // TheatersController
-const TheaterController = new (require('../app/Controllers/TheaterController.js'))();
-const theaterRouter = require('koa-router')({
-  prefix: '/theater'
-});
-
-theaterRouter.get('/all-theaters', Authorize('admin'), TheaterController.allTheaters, (err) => console.log(err));
-
+// const TheaterController = new (require('../app/Controllers/TheaterController.js'))();
+// const theaterRouter = require('koa-router')({
+//   prefix: '/theater'
+// });
+//
+// theaterRouter.get('/all-theaters', Authorize('admin'), TheaterController.allTheaters, (err) => console.log(err));
+//
 
 router.use(
     '',
-    advisingRouter.routes(),
-    theaterRouter.routes(),
+    adviseeRouter.routes(),
+    adviserRouter.routes(),
+    // theaterRouter.routes(),
     loginRouter.routes()
 );
 
