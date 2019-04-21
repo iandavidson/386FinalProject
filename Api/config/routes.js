@@ -48,8 +48,10 @@ const meetingRouter = require('koa-router')({
 });
 meetingRouter.get('/:advisor_id', Authorize("advisor"), MeetingController.getAdviseeMeetings, (err) => console.log("router.js: meeting controller: ", err));
 meetingRouter.get('/:advisee_id', Authorize("student"), MeetingController.getAdvisorMeetings, (err) => console.log("router.js: meeting controller: ", err));
-
-
+//submit a new record from student.
+meetingRouter.post('/:advisee_id', Authorize("student"), MeetingController.postAdvisorMeetings, (err) => console.log("router.js: meeting controller: ", err));
+//submit new record from adviser
+meetingRouter.post('/:advisor_id', Authorize("advisor"), MeetingController.postAdviseeMeetings, (err) => console.log("router.js: meeting controller: ", err));
 
 // TheatersController
 // const TheaterController = new (require('../app/Controllers/TheaterController.js'))();

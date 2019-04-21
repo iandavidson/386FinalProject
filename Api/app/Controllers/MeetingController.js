@@ -1,5 +1,9 @@
 const dbConnection = require('../../database/mySQLconnect');
 
+
+
+//check this shit out:::: https://www.npmjs.com/package/koa-router
+
 class MeetingController{
   constructor() {
     console.log("constructing MeetingController");
@@ -61,6 +65,68 @@ class MeetingController{
           });
         }).catch(err => console.log("Database connection error.", err));
       }
+
+      //submit a new record from student.
+      async postAdvisorMeetings(ctx){
+        return new Promise((resolve, reject) => {
+          console.log(ctx.params.advisee_id);
+          // const match = ctx.params.student_id.match(/[^0-9]+/);  // We expect an all digit user-id up to length 9.
+          // if (match) {
+          //     console.log('about to return because user input contains non-digit characters..');
+          //     return reject("Incorrect student_id, rejecting."); // send out this message as the response to this call.
+          // }
+
+          let query = `select a.id, a.advisor_id, a.advisee_id, a.advisingTime, sa.advisor_fName, sa.advisor_lName from appointment a
+                      left join cs386_sanitized_advisors sa on a.advisee_id = sa.student_id
+                      where a.advisee_id = ?
+                      order by a.advisingTime`;
+          dbConnection.query({ //check the top line.
+                  sql: query,
+                  values: [ctx.params.advisee_id] //plugs this value into '?'
+                }, (error, tuples) => {
+                  if (error) {
+                      return reject("Connection error in getAdvisorMeetings()");
+                  }
+                  ctx.body = tuples;
+                  console.log("expecting one output in tuple: ", tuples.length);
+                  ctx.status = 200;
+                  return resolve();
+            });
+          }).catch(err => console.log("Database connection error.", err));
+        }
+
+        //submit new record from adviser
+        async postAdviseeMeetings(ctx){
+          return new Promise((resolve, reject) => {
+            console.log(ctx.params.advisee_id);
+            // const match = ctx.params.student_id.match(/[^0-9]+/);  // We expect an all digit user-id up to length 9.
+            // if (match) {
+            //     console.log('about to return because user input contains non-digit characters..');
+            //     return reject("Incorrect student_id, rejecting."); // send out this message as the response to this call.
+            // }
+
+            let query = `select a.id, a.advisor_id, a.advisee_id, a.advisingTime, sa.advisor_fName, sa.advisor_lName from appointment a
+                        left join cs386_sanitized_advisors sa on a.advisee_id = sa.student_id
+                        where a.advisee_id = ?
+                        order by a.advisingTime`;
+            dbConnection.query({ //check the top line.
+                    sql: query,
+                    values: [ctx.params.advisee_id] //plugs this value into '?'
+                  }, (error, tuples) => {
+                    if (error) {
+                        return reject("Connection error in getAdvisorMeetings()");
+                    }
+                    ctx.body = tuples;
+                    console.log("expecting one output in tuple: ", tuples.length);
+                    ctx.status = 200;
+                    return resolve();
+              });
+            }).catch(err => console.log("Database connection error.", err));
+          }
+
+
+
+
 
 
 

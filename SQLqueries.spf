@@ -54,22 +54,27 @@
 		<key>session</key>
 		<dict>
 			<key>connectionEncoding</key>
-			<string>utf8mb4</string>
+			<string>latin1</string>
 			<key>contentPageNumber</key>
 			<integer>1</integer>
 			<key>contentSelection</key>
 			<data>
-			YnBsaXN0MDDUAQIDBAUGJSZYJHZlcnNpb25YJG9iamVjdHNZJGFy
-			Y2hpdmVyVCR0b3ASAAGGoKgHCBMUFRYaIVUkbnVsbNMJCgsMDxJX
-			TlMua2V5c1pOUy5vYmplY3RzViRjbGFzc6INDoACgAOiEBGABIAF
-			gAdUdHlwZVRyb3dzXxAdU2VsZWN0aW9uRGV0YWlsVHlwZU5TSW5k
-			ZXhTZXTSFwsYGVxOU1JhbmdlQ291bnQQAIAG0hscHR5aJGNsYXNz
-			bmFtZVgkY2xhc3Nlc1pOU0luZGV4U2V0oh8gWk5TSW5kZXhTZXRY
-			TlNPYmplY3TSGxwiI1xOU0RpY3Rpb25hcnmiIiRYTlNPYmplY3Rf
-			EA9OU0tleWVkQXJjaGl2ZXLRJyhUZGF0YYABAAgAEQAaACMALQAy
-			ADcAQABGAE0AVQBgAGcAagBsAG4AcQBzAHUAdwB8AIEAoQCmALMA
-			tQC3ALwAxwDQANsA3gDpAPIA9wEEAQcBEAEiASUBKgAAAAAAAAIB
-			AAAAAAAAACkAAAAAAAAAAAAAAAAAAAEs
+			YnBsaXN0MDDUAQIDBAUGOTpYJHZlcnNpb25YJG9iamVjdHNZJGFy
+			Y2hpdmVyVCR0b3ASAAGGoK0HCBUWFxgZHSQoLDE2VSRudWxs0wkK
+			CwwQFFdOUy5rZXlzWk5TLm9iamVjdHNWJGNsYXNzow0OD4ACgAOA
+			BKMREhOABYAGgAiADFR0eXBlVHJvd3NUa2V5c18QJlNlbGVjdGlv
+			bkRldGFpbFR5cGVQcmltYXJ5S2V5ZWREZXRhaWxz0wkKCxobHKCg
+			gAfSHh8gIVokY2xhc3NuYW1lWCRjbGFzc2VzXxATTlNNdXRhYmxl
+			RGljdGlvbmFyeaMgIiNcTlNEaWN0aW9uYXJ5WE5TT2JqZWN00goL
+			JSehJoAJgAvSCykqK1lOUy5zdHJpbmeAClJpZNIeHy0uXxAPTlNN
+			dXRhYmxlU3RyaW5noy0vMFhOU1N0cmluZ1hOU09iamVjdNIeHzIz
+			Xk5TTXV0YWJsZUFycmF5ozI0NVdOU0FycmF5WE5TT2JqZWN00h4f
+			IjeiIjhYTlNPYmplY3RfEA9OU0tleWVkQXJjaGl2ZXLROzxUZGF0
+			YYABAAgAEQAaACMALQAyADcARQBLAFIAWgBlAGwAcAByAHQAdgB6
+			AHwAfgCAAIIAhwCMAJEAugDBAMIAwwDFAMoA1QDeAPQA+AEFAQ4B
+			EwEVARcBGQEeASgBKgEtATIBRAFIAVEBWgFfAW4BcgF6AYMBiAGL
+			AZQBpgGpAa4AAAAAAAACAQAAAAAAAAA9AAAAAAAAAAAAAAAAAAAB
+			sA==
 			</data>
 			<key>contentSortColIsAsc</key>
 			<true/>
@@ -87,15 +92,46 @@ where sa.advisor_id = '003456791';
 -- adviser getAdviseeMeetings
 select a.id, a.advisor_id, a.advisee_id, a.advisingTime, s.student_fName, s.student_lName from appointment a
 left join cs386_students s on a.advisee_id = s.student_id
-where a.advisor_id = 003456791
+where a.advisor_id = ?
 order by a.advisingTime;
 
 
--- adviser getAdviserMeetings
-select a.id, a.advisor_id, a.advisee_id, a.advisingTime, sa.advisor_fName, s.advisor_lName from appointment a
-left join cs386_sanitized_advisors sa on a.advisor_id = sa.advisor_id
-where a.advisee_id = 003456791
+-- advisee getAdviserMeetings
+select a.id, a.advisor_id, a.advisee_id, a.advisingTime, sa.advisor_fName, sa.advisor_lName from appointment a
+left join cs386_sanitized_advisors sa on a.advisee_id = sa.student_id
+where a.advisee_id = ?
 order by a.advisingTime; 
+
+
+
+
+-- postAdvisorMeetings
+INSERT INTO appointment 
+(
+	advisor_id,
+	advisee_id,
+	advisingTime
+)
+VALUES
+( 
+	?,?,?
+);
+
+
+
+
+-- postAdviseeMeetings
+INSERT INTO appointment 
+(
+	advisor_id,
+	advisee_id,
+	advisingTime
+)
+VALUES
+( 
+	?,?,?
+);
+
 
 
 
@@ -108,6 +144,17 @@ CREATE TABLE `appointment` (
   UNIQUE KEY `advisor_id` (`advisor_id`,`advisee_id`,`advisingTime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+REATE TABLE `cs386_sanitized_advisors` (
+  `student_id` varchar(9) NOT NULL,
+  `term` varchar(4) NOT NULL,
+  `acad_plan` varchar(10) DEFAULT NULL,
+  `advisor_id` varchar(9) NOT NULL,
+  `advisor_fName` varchar(50) DEFAULT NULL,
+  `advisor_lName` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
 
 
 CREATE TABLE `advisingUsers` (
@@ -118,7 +165,7 @@ CREATE TABLE `advisingUsers` (
   `password` varchar(128) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;</string>
 			<key>table</key>
-			<string>cs386_sanitized_advisors</string>
+			<string>appointment</string>
 			<key>view</key>
 			<string>SP_VIEW_CUSTOMQUERY</string>
 			<key>windowVerticalDividerPosition</key>
@@ -133,6 +180,15 @@ CREATE TABLE `advisingUsers` (
 	<array/>
 	<key>queryHistory</key>
 	<array>
+		<string>-- advisee getAdviserMeetings
+select a.id, a.advisor_id, a.advisee_id, a.advisingTime, sa.advisor_fName, sa.advisor_lName from appointment a
+left join cs386_sanitized_advisors sa on a.advisee_id = sa.student_id
+where a.advisee_id = 003456791
+order by a.advisingTime</string>
+		<string>select a.id, a.advisor_id, a.advisee_id, a.advisingTime, sa.advisor_fName, s.advisor_lName from appointment a
+left join cs386_sanitized_advisors sa on a.advisee_id = sa.student_id
+where a.advisee_id = 003456791
+order by a.advisingTime</string>
 		<string>select a.id, a.advisor_id, a.advisee_id, a.advisingTime, sa.advisor_fName, s.advisor_lName from appointment a
 left join cs386_sanitized_advisors sa on a.advisor_id = sa.advisor_id
 where a.advisee_id = 003456791
@@ -181,8 +237,6 @@ ADD COLUMN password VARCHAR(128) AFTER user_lName</string>
 select distinct advisor_id, 'advisor', advisor_fName, advisor_lName from cs386_sanitized_advisors</string>
 		<string>select distinct advisor_id, 'advisor', advisor_fName, advisor_lName from cs386_sanitized_advisors</string>
 		<string>select advisor_id, 'advisor', advisor_fName, advisor_lName from cs386_sanitized_advisors where unique</string>
-		<string>select advisor_id, 'advisor', advisor_fName, advisor_lName from cs386_sanitized_advisors where distinct</string>
-		<string>select advisor_id, 'advisor', advisor_fName, advisor_lName from cs386_sanitized_advisors</string>
 	</array>
 	<key>rdbms_type</key>
 	<string>mysql</string>
