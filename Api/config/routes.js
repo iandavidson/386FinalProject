@@ -33,16 +33,21 @@ const adviseeRouter = require('koa-router')({
 });
 adviseeRouter.get('/:student_id', Authorize("student"), AdviseeController.getAdvisor, (err) => console.log("router.js: advisee controller: ", err));
 
-
-
-
-//AdviserController Controller
+//AdviserController
 const AdviserController = new (require('../app/Controllers/AdviserController.js'))();
 const adviserRouter = require('koa-router')({
   prefix: '/adviser'
 });
-adviseeRouter.get('/:advisor_id', Authorize("student"), AdviserController.getAdvisees, (err) => console.log("router.js: adviser controller: ", err));
+adviserRouter.get('/:advisor_id', Authorize("advisor"), AdviserController.getAdvisees, (err) => console.log("router.js: adviser controller: ", err));
 
+
+//MeetingController
+const MeetingController = new (require('../app/Controllers/MeetingController.js'))();
+const meetingRouter = require('koa-router')({
+  prefix: '/meeting'
+});
+meetingRouter.get('/:advisor_id', Authorize("advisor"), MeetingController.getAdviseeMeetings, (err) => console.log("router.js: meeting controller: ", err));
+meetingRouter.get('/:advisee_id', Authorize("student"), MeetingController.getAdvisorMeetings, (err) => console.log("router.js: meeting controller: ", err));
 
 
 
@@ -59,6 +64,7 @@ router.use(
     '',
     adviseeRouter.routes(),
     adviserRouter.routes(),
+    meetingRouter.routes(),
     // theaterRouter.routes(),
     loginRouter.routes()
 );
