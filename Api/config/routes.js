@@ -33,12 +33,12 @@ const adviseeRouter = require('koa-router')({
 });
 adviseeRouter.get('/:student_id', Authorize("student"), AdviseeController.getAdvisor, (err) => console.log("router.js: advisee controller: ", err));
 
-//AdviserController
-const AdviserController = new (require('../app/Controllers/AdviserController.js'))();
-const adviserRouter = require('koa-router')({
-  prefix: '/adviser'
+//advisorController
+const AdvisorController = new (require('../app/Controllers/AdvisorController.js'))();
+const advisorRouter = require('koa-router')({
+  prefix: '/advisor'
 });
-adviserRouter.get('/:advisor_id', Authorize("advisor"), AdviserController.getAdvisees, (err) => console.log("router.js: adviser controller: ", err));
+advisorRouter.get('/:advisor_id', Authorize("advisor"), AdvisorController.getAdvisees, (err) => console.log("router.js: advisor controller: ", err));
 
 
 //MeetingController
@@ -49,9 +49,9 @@ const meetingRouter = require('koa-router')({
 meetingRouter.get('/:advisor_id', Authorize("advisor"), MeetingController.getAdviseeMeetings, (err) => console.log("router.js: meeting controller: ", err));
 meetingRouter.get('/:advisee_id', Authorize("student"), MeetingController.getAdvisorMeetings, (err) => console.log("router.js: meeting controller: ", err));
 //submit a new record from student.
-meetingRouter.post('/:advisee_id', Authorize("student"), MeetingController.postAdvisorMeetings, (err) => console.log("router.js: meeting controller: ", err));
-//submit new record from adviser
-meetingRouter.post('/:advisor_id', Authorize("advisor"), MeetingController.postAdviseeMeetings, (err) => console.log("router.js: meeting controller: ", err));
+meetingRouter.post('/postAdvisee', Authorize("student"), MeetingController.postAdvisorMeetings, (err) => console.log("router.js: meeting controller: ", err));
+//submit new record from advisor
+meetingRouter.post('/postAdvisor', Authorize("advisor"), MeetingController.postAdviseeMeetings, (err) => console.log("router.js: meeting controller: ", err));
 
 // TheatersController
 // const TheaterController = new (require('../app/Controllers/TheaterController.js'))();
@@ -65,7 +65,7 @@ meetingRouter.post('/:advisor_id', Authorize("advisor"), MeetingController.postA
 router.use(
     '',
     adviseeRouter.routes(),
-    adviserRouter.routes(),
+    advisorRouter.routes(),
     meetingRouter.routes(),
     // theaterRouter.routes(),
     loginRouter.routes()

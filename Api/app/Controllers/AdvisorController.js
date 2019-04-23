@@ -1,18 +1,14 @@
 const dbConnection = require('../../database/mySQLconnect');
 
-class AdviserController{
+class AdvisorController{
   constructor() {
-    console.log("constructing AdviserController");
+    console.log("constructing AdvisorController");
   }
 
   async getAdvisees(ctx){
     return new Promise((resolve, reject) => {
       console.log(ctx.params.advisor_id);
-      // const match = ctx.params.student_id.match(/[^0-9]+/);  // We expect an all digit user-id up to length 9.
-      // if (match) {
-      //     console.log('about to return because user input contains non-digit characters..');
-      //     return reject("Incorrect student_id, rejecting."); // send out this message as the response to this call.
-      // }
+
 
       let query = `select s.student_fName, s.student_lName, s.student_id
 from cs386_sanitized_advisors sa
@@ -32,9 +28,6 @@ where sa.advisor_id = ?`;
         });
       }).catch(err => console.log("Database connection error.", err));
     }
-
-
-
 
 
 //   async allTheaters(ctx){
@@ -61,4 +54,4 @@ where sa.advisor_id = ?`;
 
 
 }
-module.exports = AdviserController;
+module.exports = AdvisorController;

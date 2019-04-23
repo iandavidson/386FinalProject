@@ -76,13 +76,12 @@ class MeetingController{
           //     return reject("Incorrect student_id, rejecting."); // send out this message as the response to this call.
           // }
 
-          let query = `select a.id, a.advisor_id, a.advisee_id, a.advisingTime, sa.advisor_fName, sa.advisor_lName from appointment a
-                      left join cs386_sanitized_advisors sa on a.advisee_id = sa.student_id
-                      where a.advisee_id = ?
-                      order by a.advisingTime`;
+          let query = `INSERT INTO appointment
+                      ( advisor_id, advisee_id, advisingTime )
+                      VALUES( ?,?,? )`;
           dbConnection.query({ //check the top line.
                   sql: query,
-                  values: [ctx.params.advisee_id] //plugs this value into '?'
+                  values: [ctx.params.advisor_id, ctx.params.advisee_id, ctx.params.advisingTime] //plugs this value into '?'
                 }, (error, tuples) => {
                   if (error) {
                       return reject("Connection error in getAdvisorMeetings()");
@@ -98,20 +97,21 @@ class MeetingController{
         //submit new record from adviser
         async postAdviseeMeetings(ctx){
           return new Promise((resolve, reject) => {
-            console.log(ctx.params.advisee_id);
+            // console.log(ctx.params.advisee_id);
+
+
             // const match = ctx.params.student_id.match(/[^0-9]+/);  // We expect an all digit user-id up to length 9.
             // if (match) {
             //     console.log('about to return because user input contains non-digit characters..');
             //     return reject("Incorrect student_id, rejecting."); // send out this message as the response to this call.
             // }
 
-            let query = `select a.id, a.advisor_id, a.advisee_id, a.advisingTime, sa.advisor_fName, sa.advisor_lName from appointment a
-                        left join cs386_sanitized_advisors sa on a.advisee_id = sa.student_id
-                        where a.advisee_id = ?
-                        order by a.advisingTime`;
+            let query = `INSERT INTO appointment
+                        ( advisor_id, advisee_id, advisingTime )
+                        VALUES( ?,?,? )`;
             dbConnection.query({ //check the top line.
                     sql: query,
-                    values: [ctx.params.advisee_id] //plugs this value into '?'
+                    values: [ctx.params.advisor_id, ctx.params.advisee_id, ctx.params.advisingTime] //plugs this value into '?'
                   }, (error, tuples) => {
                     if (error) {
                         return reject("Connection error in getAdvisorMeetings()");
