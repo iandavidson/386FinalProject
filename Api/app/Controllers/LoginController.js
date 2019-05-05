@@ -1,6 +1,6 @@
 const dbConnection = require('../../database/mySQLconnect');
 
-require('dotenv').config();
+// require('dotenv').config();
 
 class LoginController {
     async authorizeUser(ctx) {//ctx gets passed in here from routes.js

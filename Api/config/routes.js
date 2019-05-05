@@ -49,9 +49,15 @@ const meetingRouter = require('koa-router')({
 meetingRouter.get('/:advisor_id', Authorize("advisor"), MeetingController.getAdviseeMeetings, (err) => console.log("router.js: meeting controller: ", err));
 meetingRouter.get('/:advisee_id', Authorize("student"), MeetingController.getAdvisorMeetings, (err) => console.log("router.js: meeting controller: ", err));
 //submit a new record from student.
-meetingRouter.post('/postAdvisee', Authorize("student"), MeetingController.postAdvisorMeetings, (err) => console.log("router.js: meeting controller: ", err));
+meetingRouter.post('/postAdvisee', Authorize("student"), MeetingController.postAdvisorMeeting, (err) => console.log("router.js: meeting controller: ", err));
 //submit new record from advisor
-meetingRouter.post('/postAdvisor', Authorize("advisor"), MeetingController.postAdviseeMeetings, (err) => console.log("router.js: meeting controller: ", err));
+meetingRouter.post('/postAdvisor', Authorize("advisor"), MeetingController.postAdviseeMeeting, (err) => console.log("router.js: meeting controller: ", err));
+// will post a AdvisingPreferences record
+meetingRouter.post('/postPreference', Authorize("advisor"), MeetingController.postPreference, (err) => console.log("router.js: meeting controller: ", err));
+
+
+
+
 
 // TheatersController
 // const TheaterController = new (require('../app/Controllers/TheaterController.js'))();
@@ -60,14 +66,13 @@ meetingRouter.post('/postAdvisor', Authorize("advisor"), MeetingController.postA
 // });
 //
 // theaterRouter.get('/all-theaters', Authorize('admin'), TheaterController.allTheaters, (err) => console.log(err));
-//
+
 
 router.use(
     '',
     adviseeRouter.routes(),
     advisorRouter.routes(),
     meetingRouter.routes(),
-    // theaterRouter.routes(),
     loginRouter.routes()
 );
 

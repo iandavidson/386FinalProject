@@ -18,10 +18,10 @@ class MeetingController{
       //     return reject("Incorrect student_id, rejecting."); // send out this message as the response to this call.
       // }
 
-      let query = `select a.id, a.advisor_id, a.advisee_id, a.advisingTime, s.student_fName, s.student_lName from appointment a
+      let query = `select a.id, a.declined, a.advisor_id, a.advisee_id, a.advisingTime, s.student_fName, s.student_lName from appointment a
                   left join cs386_students s on a.advisee_id = s.student_id
-                  where a.advisor_id = ?
-                  order by a.advisingTime`;
+				          where a.advisor_id = ?
+                  order by a.advisingTime;`;
       dbConnection.query({ //check the top line.
               sql: query,
               values: [ctx.params.advisor_id] //plugs this value into '?'
@@ -47,10 +47,10 @@ class MeetingController{
         //     return reject("Incorrect student_id, rejecting."); // send out this message as the response to this call.
         // }
 
-        let query = `select a.id, a.advisor_id, a.advisee_id, a.advisingTime, sa.advisor_fName, sa.advisor_lName from appointment a
+        let query = `select a.id, a.declined, a.advisor_id, a.advisee_id, a.advisingTime, sa.advisor_fName, sa.advisor_lName from appointment a
                     left join cs386_sanitized_advisors sa on a.advisee_id = sa.student_id
-                    where a.advisee_id = ?
-                    order by a.advisingTime`;
+					          where a.advisee_id = ?
+                    order by a.advisingTime;`;
         dbConnection.query({ //check the top line.
                 sql: query,
                 values: [ctx.params.advisee_id] //plugs this value into '?'
@@ -67,24 +67,25 @@ class MeetingController{
       }
 
       //submit a new record from student.
-      async postAdvisorMeetings(ctx){
+      async postAdvisorMeeting(ctx){
         return new Promise((resolve, reject) => {
-          console.log(ctx.params.advisee_id);
+          console.log("advisee_id: " + ctx.params.advisee_id);
+          console.log("advisor_id: " + ctx.params.advisor_id);
+          console.log("advisingTime: " + ctx.params.advisingTime);
           // const match = ctx.params.student_id.match(/[^0-9]+/);  // We expect an all digit user-id up to length 9.
           // if (match) {
           //     console.log('about to return because user input contains non-digit characters..');
           //     return reject("Incorrect student_id, rejecting."); // send out this message as the response to this call.
           // }
-
           let query = `INSERT INTO appointment
-                      ( advisor_id, advisee_id, advisingTime )
-                      VALUES( ?,?,? )`;
+                      ( advisor_id, advisee_id, advisingTime, declined)
+                      VALUES( ?,?,?,0)`;
           dbConnection.query({ //check the top line.
                   sql: query,
                   values: [ctx.params.advisor_id, ctx.params.advisee_id, ctx.params.advisingTime] //plugs this value into '?'
                 }, (error, tuples) => {
                   if (error) {
-                      return reject("Connection error in getAdvisorMeetings()");
+                      return reject("Connection error in postAdvisorMeeting()");
                   }
                   ctx.body = tuples;
                   console.log("expecting one output in tuple: ", tuples.length);
@@ -95,7 +96,7 @@ class MeetingController{
         }
 
         //submit new record from adviser
-        async postAdviseeMeetings(ctx){
+        async postAdviseeMeeting(ctx){
           return new Promise((resolve, reject) => {
             // console.log(ctx.params.advisee_id);
 
@@ -107,14 +108,14 @@ class MeetingController{
             // }
 
             let query = `INSERT INTO appointment
-                        ( advisor_id, advisee_id, advisingTime )
-                        VALUES( ?,?,? )`;
+                        ( advisor_id, advisee_id, advisingTime, declined)
+                        VALUES( ?,?,?,0)`;
             dbConnection.query({ //check the top line.
                     sql: query,
                     values: [ctx.params.advisor_id, ctx.params.advisee_id, ctx.params.advisingTime] //plugs this value into '?'
                   }, (error, tuples) => {
                     if (error) {
-                        return reject("Connection error in getAdvisorMeetings()");
+                        return reject("Connection error in postAdviseeMeeting()");
                     }
                     ctx.body = tuples;
                     console.log("expecting one output in tuple: ", tuples.length);
@@ -127,7 +128,31 @@ class MeetingController{
 
 
 
-
+          async postPreference(ctx){
+            return new Promise((resolve, reject) => {
+              console.log("in postPreference()");
+              console.log(ctx.params);
+              // const match = ctx.params.student_id.match(/[^0-9]+/);  // We expect an all digit user-id up to length 9.
+              // if (match) {
+              //     console.log('about to return because user input contains non-digit characters..');
+              //     return reject("Incorrect student_id, rejecting."); // send out this message as the response to this call.
+              // }
+              let query = `insert into AdvisorPreferences (advisor_id, dayOfWeek, startTime, meetingLength, numberOfSessions, lockDays)
+                            values (?, ?, ?, ?, ?, ?)`;
+              dbConnection.query({ //check the top line.
+                      sql: query,
+                      values: [ctx.params.advisor_id, ctx.params.dayOfWeek, ctx.params.startTime, ctx.params.meetingLength, ctx.params.numberOfSessions, ctx.params.lockDays] //plugs this value into '?'
+                    }, (error, tuples) => {
+                      if (error) {
+                          return reject("Connection error in postPreference()");
+                      }
+                      ctx.body = tuples;
+                      console.log("expecting one output in tuple: ", tuples.length);
+                      ctx.status = 200;
+                      return resolve();
+                });
+              }).catch(err => console.log("Database connection error.", err));
+            }
 
 
 
