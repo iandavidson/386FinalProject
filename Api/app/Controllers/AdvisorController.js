@@ -29,6 +29,27 @@ where sa.advisor_id = ?`;
       }).catch(err => console.log("Database connection error.", err));
     }
 
+    async getPreferences(ctx){
+      return new Promise((resolve, reject) => {
+        console.log(ctx.params.id);
+        console.log("inside getPreferences");
+
+        let query = `select * from AdvisorPreferences where advisor_id = ?`;
+        dbConnection.query({ //check the top line.
+                sql: query,
+                values: [ctx.params.id] //plugs this value into '?'
+              }, (error, tuples) => {
+                if (error) {
+                    return reject("Connection error in getPreferences()");
+                }
+                ctx.body = tuples;
+                console.log("expecting many outputs in tuple: ", tuples.length);
+                ctx.status = 200;
+                return resolve();
+          });
+        }).catch(err => console.log("Database connection error.", err));
+      }
+
 
 //   async allTheaters(ctx){
 //     return new Promise((resolve, reject) => {

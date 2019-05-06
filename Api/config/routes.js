@@ -26,6 +26,11 @@ const loginRouter = require('koa-router')({
 });
 loginRouter.get('/:user_id', LoginController.authorizeUser, (err) => console.log("routers.js: loginRouter error:", err));
 
+
+
+
+
+
 //AdviseeController Controller
 const AdviseeController = new (require('../app/Controllers/AdviseeController.js'))();
 const adviseeRouter = require('koa-router')({
@@ -33,12 +38,20 @@ const adviseeRouter = require('koa-router')({
 });
 adviseeRouter.get('/:student_id', Authorize("student"), AdviseeController.getAdvisor, (err) => console.log("router.js: advisee controller: ", err));
 
-//advisorController
+//
+
+
+
+
+//AdvisorController
 const AdvisorController = new (require('../app/Controllers/AdvisorController.js'))();
 const advisorRouter = require('koa-router')({
   prefix: '/advisor'
 });
 advisorRouter.get('/:advisor_id', Authorize("advisor"), AdvisorController.getAdvisees, (err) => console.log("router.js: advisor controller: ", err));
+advisorRouter.get('/preferences/:id', Authorize("advisor"), AdvisorController.getPreferences, (err) => console.log("router.js: advisor controller: ", err));
+
+
 
 
 //MeetingController
@@ -46,17 +59,27 @@ const MeetingController = new (require('../app/Controllers/MeetingController.js'
 const meetingRouter = require('koa-router')({
   prefix: '/meeting'
 });
-meetingRouter.get('/:advisor_id', Authorize("advisor"), MeetingController.getAdviseeMeetings, (err) => console.log("router.js: meeting controller: ", err));
-meetingRouter.get('/:advisee_id', Authorize("student"), MeetingController.getAdvisorMeetings, (err) => console.log("router.js: meeting controller: ", err));
+meetingRouter.get('/advisor/:advisor_id', Authorize("advisor"), MeetingController.getAdviseeMeetings, (err) => console.log("router.js: meeting controller: ", err));
+meetingRouter.get('/advisee/:advisee_id', Authorize("student"), MeetingController.getAdvisorMeetings, (err) => console.log("router.js: meeting controller: ", err));
+
 //submit a new record from student.
-meetingRouter.post('/postAdvisee', Authorize("student"), MeetingController.postAdvisorMeeting, (err) => console.log("router.js: meeting controller: ", err));
+meetingRouter.post('/postAdvisee', Authorize("student"), MeetingController.postAdviseeMeeting, (err) => console.log("router.js: meeting controller: ", err));
 //submit new record from advisor
-meetingRouter.post('/postAdvisor', Authorize("advisor"), MeetingController.postAdviseeMeeting, (err) => console.log("router.js: meeting controller: ", err));
+meetingRouter.post('/postAdvisor', Authorize("advisor"), MeetingController.postAdvisorMeeting, (err) => console.log("router.js: meeting controller: ", err));
 // will post a AdvisingPreferences record
 meetingRouter.post('/postPreference', Authorize("advisor"), MeetingController.postPreference, (err) => console.log("router.js: meeting controller: ", err));
 
+//update meeting, addNote
+meetingRouter.post('/addNote/:id', Authorize("advisor"), MeetingController.updateMeetingNote, (err) => console.log("router.js: meeting controller: ", err));
+//update meeting, decline
+meetingRouter.post('/decline/:id', Authorize("advisor"), MeetingController.updateDecline, (err) => console.log("router.js: meeting controller: ", err));
 
-
+//delete record for student
+meetingRouter.post('/advisee/delete/:id', Authorize("student"), MeetingController.deleteAppointment, (err) => console.log("router.js: meeting controller: ", err));
+//delete record for advisor
+meetingRouter.post('/advisor/delete/:id', Authorize("advisor"), MeetingController.deleteAppointment, (err) => console.log("router.js: meeting controller: ", err));
+//delete preference-day for advisor
+meetingRouter.post('/advisor/deletePreference/:id', Authorize("advisor"), MeetingController.deletePreference, (err) => console.log("router.js: meeting controller: ", err));
 
 
 // TheatersController
