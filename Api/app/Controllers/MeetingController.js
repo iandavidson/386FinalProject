@@ -79,8 +79,8 @@ class MeetingController{
       //     return reject("Incorrect student_id, rejecting."); // send out this message as the response to this call.
       // }
       let query = `INSERT INTO appointment
-                  ( advisor_id, advisee_id, advisingTime, declined)
-                  VALUES( ?,?,?,0)`;
+                  ( advisor_id, advisee_id, advisingTime, declined, meetigNotes)
+                  VALUES( ?,?,?,0, NULL)`;
       dbConnection.query({ //check the top line.
               sql: query,
               values: [ctx.params.advisor_id, ctx.params.advisee_id, ctx.params.advisingTime] //plugs this value into '?'
@@ -135,11 +135,11 @@ class MeetingController{
       //     console.log('about to return because user input contains non-digit characters..');
       //     return reject("Incorrect student_id, rejecting."); // send out this message as the response to this call.
       // }
-      let query = `insert into AdvisorPreferences (advisor_id, dayOfWeek, startTime, meetingLength, numberOfSessions, lockDays)
+      let query = `insert into AdvisorPreferences (advisor_id, dayOfWeek, startTime, meetingLength, numberOfSessions)
                     values (?, ?, ?, ?, ?, ?)`;
       dbConnection.query({ //check the top line.
               sql: query,
-              values: [ctx.params.advisor_id, ctx.params.dayOfWeek, ctx.params.startTime, ctx.params.meetingLength, ctx.params.numberOfSessions, ctx.params.lockDays] //plugs this value into '?'
+              values: [ctx.params.advisor_id, ctx.params.dayOfWeek, ctx.params.startTime, ctx.params.meetingLength, ctx.params.numberOfSessions] //plugs this value into '?'
             }, (error, tuples) => {
               if (error) {
                   return reject("Connection error in postPreference()");
@@ -250,7 +250,9 @@ class MeetingController{
               ctx.status = 200;
               return resolve();
       });
-    }).catch(err => console.log("Database connection error.", err));
+    }).catch(err => {
+      ctx.status= 500;
+      console.log("Database connection error.", err);});
   }
 //   async allTheaters(ctx){
 //     return new Promise((resolve, reject) => {

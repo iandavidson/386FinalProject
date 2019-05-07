@@ -50,6 +50,53 @@ where sa.advisor_id = ?`;
         }).catch(err => console.log("Database connection error.", err));
       }
 
+      async getLockForAdvisor(ctx){
+        return new Promise((resolve, reject) => {
+          console.log(ctx.params.advisor_id);
+          console.log("inside getPreferences");
+
+          let query = `select * from AdvisorLock where advisor_id = ?`;
+          dbConnection.query({ //check the top line.
+                  sql: query,
+                  values: [ctx.params.advisor_id] //plugs this value into '?'
+                }, (error, tuples) => {
+                  if (error) {
+                      return reject("Connection error in getPreferences()");
+                  }
+                  ctx.body = tuples;
+                  console.log("expecting many outputs in tuple: ", tuples.length);
+                  ctx.status = 200;
+                  return resolve();
+            });
+          }).catch(err => console.log("Database connection error.", err));
+        }
+
+
+
+      async updateLock(ctx){
+        return new Promise((resolve, reject) => {
+          console.log("in updateLock()");
+          console.log(ctx.params);
+          // const match = ctx.params.student_id.match(/[^0-9]+/);  // We expect an all digit user-id up to length 9.
+          // if (match) {
+          //     console.log('about to return because user input contains non-digit characters..');
+          //     return reject("Incorrect student_id, rejecting."); // send out this message as the response to this call.
+          // }
+          let query = `update AdvisorLock set lockDays = ? where id = ?`;
+          dbConnection.query({ //check the top line.
+                  sql: query,
+                  values: [ctx.params.lockDays, ctx.params.id] //plugs this value into
+                }, (error, tuples) => {
+                  if (error) {
+                      return reject("Connection error in updateLock()");
+                  }
+                  ctx.body = tuples;
+                  console.log("expecting one output in tuple: ", tuples.length);
+                  ctx.status = 200;
+                  return resolve();
+            });
+        }).catch(err => console.log("Database connection error.", err));
+      }
 
 //   async allTheaters(ctx){
 //     return new Promise((resolve, reject) => {
