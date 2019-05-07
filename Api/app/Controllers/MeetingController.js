@@ -79,8 +79,8 @@ class MeetingController{
       //     return reject("Incorrect student_id, rejecting."); // send out this message as the response to this call.
       // }
       let query = `INSERT INTO appointment
-                  ( advisor_id, advisee_id, advisingTime, declined, meetigNotes)
-                  VALUES( ?,?,?,0, NULL)`;
+                  ( advisor_id, advisee_id, advisingTime, declined)
+                  VALUES( ?,?,?,0)`;
       dbConnection.query({ //check the top line.
               sql: query,
               values: [ctx.params.advisor_id, ctx.params.advisee_id, ctx.params.advisingTime] //plugs this value into '?'
