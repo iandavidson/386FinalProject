@@ -2,7 +2,6 @@ const dbConnection = require('../../database/mySQLconnect');
 
 
 
-//check this shit out:::: https://www.npmjs.com/package/koa-router
 
 class MeetingController{
   constructor() {
@@ -136,7 +135,7 @@ class MeetingController{
       //     return reject("Incorrect student_id, rejecting."); // send out this message as the response to this call.
       // }
       let query = `insert into AdvisorPreferences (advisor_id, dayOfWeek, startTime, meetingLength, numberOfSessions)
-                    values (?, ?, ?, ?, ?, ?)`;
+                    values (?, ?, ?, ?, ?)`;
       dbConnection.query({ //check the top line.
               sql: query,
               values: [ctx.params.advisor_id, ctx.params.dayOfWeek, ctx.params.startTime, ctx.params.meetingLength, ctx.params.numberOfSessions] //plugs this value into '?'

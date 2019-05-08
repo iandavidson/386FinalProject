@@ -38,7 +38,8 @@ const adviseeRouter = require('koa-router')({
   prefix: '/advisee'
 });
 adviseeRouter.get('/:student_id', Authorize("student"), AdviseeController.getAdvisor, (err) => console.log("router.js: advisee controller: ", err));
-adviseeRouter.get('/:advisor_id', Authorize("student"), AdviseeController.getLock, (err) => console.log("router.js: advisor controller: ", err));
+adviseeRouter.get('/lock/:advisor_id', Authorize("student"), AdviseeController.getLock, (err) => console.log("router.js: advisor controller: ", err));
+adviseeRouter.get('/preference/:advisor_id', Authorize("student"), AdviseeController.getAdvisorPreferences, (err) => console.log("router.js: advisor controller: ", err));
 //
 
 
@@ -52,7 +53,7 @@ const advisorRouter = require('koa-router')({
 advisorRouter.get('/:advisor_id', Authorize("advisor"), AdvisorController.getAdvisees, (err) => console.log("router.js: advisor controller: ", err));
 advisorRouter.get('/preferences/:id', Authorize("advisor"), AdvisorController.getPreferences, (err) => console.log("router.js: advisor controller: ", err));
 advisorRouter.get('/lockDays/:advisor_id', Authorize("adivsor"), AdvisorController.getLockForAdvisor, (err) => console.log("router.js: advisor controller ", err));
-advisorRouter.post('/PostLockDays/:id/:lockDays', Authorize("adivsor"), AdvisorController.updateLock, (err) => console.log("router.js: advisor controller ", err));
+advisorRouter.post('/postLockDays/:advisor_id/:lockDays', Authorize("adivsor"), AdvisorController.PostLockDays, (err) => console.log("router.js: advisor controller ", err));
 
 
 

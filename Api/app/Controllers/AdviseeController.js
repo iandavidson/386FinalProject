@@ -57,6 +57,34 @@ class AdviseeController{
       }).catch(err => console.log("Database connection error.", err));
     }
 
+
+    async getAdvisorPreferences(ctx){
+      return new Promise((resolve, reject) => {
+      console.log(ctx.params.advisor_id);
+      // const match = ctx.params.student_id.match(/[^0-9]+/);  // We expect an all digit user-id up to length 9.
+      // if (match) {
+      //     console.log('about to return because user input contains non-digit characters..');
+      //     return reject("Incorrect student_id, rejecting."); // send out this message as the response to this call.
+      // }
+
+      let query = `select * from AdvisorPreferences where advisor_id = ?`;
+      dbConnection.query({ //check the top line.
+              sql: query,
+              values: [ctx.params.advisor_id] //plugs this value into '?'
+            }, (error, tuples) => {
+              if (error) {
+                  return reject("Connection error in getAdvisorPreferences()");
+              }
+              ctx.body = tuples;
+              console.log("expecting one output in tuple: ", tuples.length);
+              ctx.status = 200;
+              return resolve();
+        });
+      }).catch(err => console.log("Database connection error.", err));
+    }
+
+
+
 //delete appointment if we are not in a locked day.
   // async deleteAppointment(ctx){
   //   return new Promise((resolve, reject) => {

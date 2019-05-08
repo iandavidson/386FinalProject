@@ -73,30 +73,57 @@ where sa.advisor_id = ?`;
 
 
 
-      async updateLock(ctx){
+      // async updateLock(ctx){
+      //   return new Promise((resolve, reject) => {
+      //     console.log("in updateLock()");
+      //     console.log(ctx.params);
+      //     // const match = ctx.params.student_id.match(/[^0-9]+/);  // We expect an all digit user-id up to length 9.
+      //     // if (match) {
+      //     //     console.log('about to return because user input contains non-digit characters..');
+      //     //     return reject("Incorrect student_id, rejecting."); // send out this message as the response to this call.
+      //     // }
+      //     let query = `update AdvisorLock set lockDays = ? where id = ?`;
+      //     dbConnection.query({ //check the top line.
+      //             sql: query,
+      //             values: [ctx.params.lockDays, ctx.params.id] //plugs this value into
+      //           }, (error, tuples) => {
+      //             if (error) {
+      //                 return reject("Connection error in updateLock()");
+      //             }
+      //             ctx.body = tuples;
+      //             console.log("expecting one output in tuple: ", tuples.length);
+      //             ctx.status = 200;
+      //             return resolve();
+      //       });
+      //   }).catch(err => console.log("Database connection error.", err));
+      // }
+
+
+      async PostLockDays(ctx){
         return new Promise((resolve, reject) => {
-          console.log("in updateLock()");
-          console.log(ctx.params);
+          console.log("advisor_id: " + ctx.params.advisor_id);
+          console.log("lock days: " + ctx.params.lockDays);
           // const match = ctx.params.student_id.match(/[^0-9]+/);  // We expect an all digit user-id up to length 9.
           // if (match) {
           //     console.log('about to return because user input contains non-digit characters..');
           //     return reject("Incorrect student_id, rejecting."); // send out this message as the response to this call.
           // }
-          let query = `update AdvisorLock set lockDays = ? where id = ?`;
+          let query = `update AdvisorLock set lockDays = ? where advisor_id = ?;`;
           dbConnection.query({ //check the top line.
                   sql: query,
-                  values: [ctx.params.lockDays, ctx.params.id] //plugs this value into
+                  values: [ctx.params.advisor_id, ctx.params.lockDays] //plugs this value into '?'
                 }, (error, tuples) => {
                   if (error) {
-                      return reject("Connection error in updateLock()");
+                      return reject("Connection error in PostLockDays()");
                   }
                   ctx.body = tuples;
                   console.log("expecting one output in tuple: ", tuples.length);
                   ctx.status = 200;
                   return resolve();
             });
-        }).catch(err => console.log("Database connection error.", err));
+          }).catch(err => console.log("Database connection error.", err));
       }
+
 
 //   async allTheaters(ctx){
 //     return new Promise((resolve, reject) => {
