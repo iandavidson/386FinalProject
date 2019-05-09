@@ -20,7 +20,7 @@ class MeetingController{
       let query = `select a.id, a.declined, a.advisor_id, a.advisee_id, a.advisingTime, s.student_fName, s.student_lName from appointment a
                   left join cs386_students s on a.advisee_id = s.student_id
 				          where a.advisor_id = ?
-                  order by a.advisingTime;`;
+                  order by a.advisingTime`;
       dbConnection.query({ //check the top line.
               sql: query,
               values: [ctx.params.advisor_id] //plugs this value into '?'
@@ -142,6 +142,33 @@ class MeetingController{
             }, (error, tuples) => {
               if (error) {
                   return reject("Connection error in postPreference()");
+              }
+              ctx.body = tuples;
+              console.log("expecting one output in tuple: ", tuples.length);
+              ctx.status = 200;
+              return resolve();
+        });
+      }).catch(err => console.log("Database connection error.", err));
+  }
+
+  async updatePreference(ctx){
+    return new Promise((resolve, reject) => {
+      console.log("in updatePreference()");
+      console.log(ctx.params);
+      // const match = ctx.params.student_id.match(/[^0-9]+/);  // We expect an all digit user-id up to length 9.
+      // if (match) {
+      //     console.log('about to return because user input contains non-digit characters..');
+      //     return reject("Incorrect student_id, rejecting."); // send out this message as the response to this call.
+      // }
+      let query = `update AdvisorPreferences
+      set advisor_id = ?, dayOfWeek = ?, startTime = ?, meetingLength = ?, numberOfSessions = ?
+      where id = ?`;
+      dbConnection.query({ //check the top line.
+              sql: query,
+              values: [ctx.params.advisor_id, ctx.params.dayOfWeek, ctx.params.startTime, ctx.params.meetingLength, ctx.params.numberOfSessions, ctx.params.id] //plugs this value into '?'
+            }, (error, tuples) => {
+              if (error) {
+                  return reject("Connection error in updatePreference()");
               }
               ctx.body = tuples;
               console.log("expecting one output in tuple: ", tuples.length);
